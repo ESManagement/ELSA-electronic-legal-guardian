@@ -1,0 +1,22 @@
+{
+  "name": "elsa-overformyndare",
+  "version": "0.1.0",
+  "description": "ELSA Överförmyndare – granskningsstöd för årsräkning (MVP)",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "demo": "npm run build && node dist/demo.js"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  }
+}
