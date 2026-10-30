@@ -1,3 +1,7 @@
 node_modules/
 dist/
 coverage/
+frontend/node_modules
+frontend/dist
+frontend/dist-demo
+frontend/*.tsbuildinfo

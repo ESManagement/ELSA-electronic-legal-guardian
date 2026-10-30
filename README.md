@@ -46,6 +46,12 @@ versionen.
 - **Brev innehåller inga interna arbetsinstruktioner.** Frågor till
   ställföreträdaren byggs från en neutral postbeskrivning.
 
+## Gränssnitt
+
+I `frontend/` finns en klickbar webbapplikation uppbyggd som ELSA Social (inloggning per roll,
+sidomeny, rollanpassad startsida) som kör motorn direkt i webbläsaren. Se
+[frontend/README.md](frontend/README.md).
+
 ## Kom igång
 
 ```bash
