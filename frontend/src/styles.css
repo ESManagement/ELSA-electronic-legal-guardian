@@ -256,3 +256,51 @@ a.knapp { display: inline-block; text-decoration: none; border-radius: 8px; padd
 .hinder { margin: 0.4rem 0 0; padding-left: 1.2rem; font-size: 0.88rem; }
 .hash { font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; color: var(--text-2); }
 .olaslig td { background: var(--fara-ljus); }
+
+/* ELSA START – samlingsmodulen enligt presentationen "ELSA moduler 18 st" */
+:root { --es-gron: #1f3a30; --es-gron-2: #3d6b52; --es-ockra: #c0702a; --es-ockra-ljus: #e7a25e; --es-kant: #e3dccb; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --es-gron: #16261f; --es-gron-2: #4f8a6a; --es-ockra: #e7a25e; --es-ockra-ljus: #f0b77d; --es-kant: #39443e; } }
+:root[data-theme="dark"] { --es-gron: #16261f; --es-gron-2: #4f8a6a; --es-ockra: #e7a25e; --es-ockra-ljus: #f0b77d; --es-kant: #39443e; }
+.es-start { display: grid; grid-template-columns: minmax(240px, 30%) 1fr; border-radius: var(--radie); overflow: hidden; border: 1px solid var(--linje); background: var(--yta); }
+.es-panel { background: var(--es-gron); color: #f3f1ea; padding: 2rem 1.8rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.es-panel p { margin: 0; color: #d9e1dc; }
+.es-logo { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--es-ockra-ljus); background: var(--es-gron-2); display: grid; place-items: center; color: #fff; margin-bottom: 0.8rem; }
+.es-logo svg { width: 28px; height: 28px; }
+.es-eyebrow { font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--es-ockra); }
+.es-panel .es-eyebrow { color: var(--es-ockra-ljus); }
+.es-rubrik { font-family: Georgia, "Times New Roman", serif; font-size: 2.8rem; line-height: 1.05; margin: 0.2rem 0 0.4rem; }
+.es-rubrik.liten { font-size: 2rem; color: var(--text); }
+.es-antal { font-family: Georgia, serif; font-size: 3.4rem; font-weight: 700; margin-top: auto; line-height: 1; padding-top: 1.5rem; }
+.es-antal-text { color: var(--es-ockra-ljus); font-weight: 600; font-size: 0.9rem; }
+.es-igang { color: #fff; font-weight: 600; margin-top: 0.8rem; }
+.es-moduler { padding: 1.8rem; min-width: 0; }
+.es-sektor { display: inline-block; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--es-ockra); text-decoration: none; margin: 0.4rem 0 0.7rem; }
+.es-sektor:hover { text-decoration: underline; }
+.es-rutnat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; margin-bottom: 1.2rem; }
+.es-rutnat.stort { gap: 1rem; margin: 1.5rem 0; }
+.es-modul { display: flex; align-items: center; gap: 0.8rem; text-align: left; background: var(--yta); border: 1px solid var(--es-kant); border-radius: 4px; padding: 0.75rem 0.9rem; font-weight: 600; color: var(--text); min-width: 0; }
+.es-modul:hover { border-color: var(--es-gron-2); background: var(--yta-2); }
+.es-modul:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.es-modul.finns { border-color: var(--es-gron-2); box-shadow: inset 3px 0 0 var(--es-ockra); }
+.es-modul.stor { padding: 1.4rem 1.2rem; gap: 1rem; }
+.es-ikon { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--es-gron-2); color: #fff; display: grid; place-items: center; }
+.es-modul.stor .es-ikon { width: 52px; height: 52px; }
+.es-modul.stor .es-ikon svg { width: 28px; height: 28px; }
+.es-text { display: flex; flex-direction: column; min-width: 0; }
+.es-elsa { font-size: 0.7rem; font-weight: 700; color: var(--es-ockra); }
+.es-namn { font-size: 0.92rem; }
+.es-modul.stor .es-namn { font-size: 1.1rem; }
+.es-besk { font-size: 0.78rem; font-weight: 400; color: var(--text-2); }
+.es-info { margin-top: 0; }
+.es-sida { max-width: 1180px; }
+.es-tillbaka { font-size: 0.82rem; font-weight: 700; color: var(--es-gron-2); text-decoration: none; }
+.es-knapp { background: var(--es-gron-2); color: #fff; text-decoration: none; padding: 0.7rem 1.4rem; border-radius: 6px; font-weight: 600; }
+.es-steg { list-style: none; padding: 0; margin: 1.5rem 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.8rem; }
+.es-steg li { border: 1px solid var(--es-kant); background: var(--yta); padding: 1.1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.es-nr { width: 40px; height: 40px; border-radius: 50%; background: var(--es-gron-2); color: #fff; display: grid; place-items: center; font-family: Georgia, serif; font-size: 1.3rem; font-weight: 700; }
+.es-villkor { background: var(--es-gron); color: #e6ece8; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; padding: 1.3rem 1.5rem; margin-bottom: 1rem; }
+.es-villkor div { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem; }
+.es-villkor strong { color: var(--es-ockra-ljus); }
+@media (max-width: 960px) { .es-steg { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 860px) { .es-start { grid-template-columns: 1fr; } .es-antal { padding-top: 0.5rem; } .es-rutnat { grid-template-columns: 1fr 1fr; } .es-villkor { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .es-rutnat, .es-steg { grid-template-columns: 1fr; } .es-rubrik { font-size: 2.2rem; } }
