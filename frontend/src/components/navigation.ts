@@ -1,12 +1,14 @@
 // Menyn är uppbyggd som i ELSA Social: grupper, behörighetsstyrda länkar och en kort beskrivning per länk.
 // Domänerna val och överförmyndare har egna grupper och delar inga ärendelänkar.
-export type NavGrupp = "Min dag" | "Överförmyndare" | "Val" | "E-tjänst" | "Styrning";
-export const GRUPPORDNING: NavGrupp[] = ["Min dag", "Överförmyndare", "Val", "E-tjänst", "Styrning"];
+export type NavGrupp = "ELSA START" | "Min dag" | "Överförmyndare" | "Val" | "E-tjänst" | "Styrning";
+export const GRUPPORDNING: NavGrupp[] = ["ELSA START", "Min dag", "Överförmyndare", "Val", "E-tjänst", "Styrning"];
 
 export type Lank = { grupp: NavGrupp; till: string; namn: string; behorighet: string[]; beskrivning?: string; ordning?: number };
 
 export const NAVIGATION: Lank[] = [
-  { grupp: "Min dag", till: "/", namn: "Översikt", behorighet: ["oversikt"], beskrivning: "Det som väntar på dig i dag", ordning: 0 },
+  { grupp: "ELSA START", till: "/start", namn: "Alla moduler", behorighet: ["oversikt"], beskrivning: "Samlingsmodulen med alla 18 ELSA-moduler", ordning: 0 },
+  { grupp: "ELSA START", till: "/start/kom-igang", namn: "Så kommer ni igång", behorighet: ["oversikt"], beskrivning: "Demo, produkt, offert och inloggning via esmanagement.se", ordning: 10 },
+  { grupp: "Min dag", till: "/", namn: "Översikt för modulen", behorighet: ["oversikt"], beskrivning: "Det som väntar på dig i dag", ordning: 0 },
   { grupp: "Min dag", till: "/notiser", namn: "Notiser", behorighet: ["oversikt"], beskrivning: "Signaler som behöver en ansvarig", ordning: 10 },
   { grupp: "Överförmyndare", till: "/arenden", namn: "Ärenden", behorighet: ["of.arende"], beskrivning: "Arbetskö, status och kösignaler", ordning: 10 },
   { grupp: "Överförmyndare", till: "/arenden/AR-SYNT-1", namn: "Granskning av årsräkning", behorighet: ["of.granska"], beskrivning: "Redovisningsmotor, checklista och avslutsgrind", ordning: 20 },

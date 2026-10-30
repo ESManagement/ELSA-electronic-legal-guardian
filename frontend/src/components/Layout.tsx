@@ -73,16 +73,16 @@ export function Layout({ children }: { children: ReactNode }) {
       /* inget sparat */
     }
   };
-  const aktuellGrupp = grupper.find((g) => g.lankar.some((l) => (l.till === "/" ? plats.pathname === "/" : plats.pathname.startsWith(l.till))))?.grupp;
+  const aktuellGrupp = grupper.find((g) => g.lankar.some((l) => (l.till === "/" ? plats.pathname === "/" : plats.pathname === l.till || plats.pathname.startsWith(`${l.till}/`))))?.grupp;
   const doman = har("val.planera") ? "Valnämnd" : har("of.arende") ? "Överförmyndare" : har("etjanst") ? "E-tjänst för ställföreträdare" : "Förvaltning av systemet";
 
   return (
     <div className="ram">
       <aside className={`sidomeny${oppenMeny ? " oppen" : ""}`}>
         <div className="rad-mellan">
-          <div className="logga">
+          <NavLink className="logga" to={jag.roll === "stallforetradare" ? "/" : "/start"} style={{ textDecoration: "none", color: "inherit" }} title="ELSA START">
             <span className="logga-markor">ELSA</span> Val &amp; Överförmyndare
-          </div>
+          </NavLink>
           <button className="lank menyknapp" onClick={() => setOppenMeny(!oppenMeny)} aria-expanded={oppenMeny}>
             {oppenMeny ? "Stäng" : "Meny"}
           </button>

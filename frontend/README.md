@@ -20,6 +20,7 @@ npm run build:demo   # en enda HTML-fil i dist-demo/ som fungerar utan server
 
 | Vy | Vem | Vad den visar |
 |---|---|---|
+| ELSA START | Alla utom ställföreträdare | Samlingsmodulen med alla 18 ELSA-moduler, sektorsidor och "Så kommer ni igång" (enligt presentationen *ELSA moduler 18 st*). Första sidan efter inloggning. |
 | Översikt | Alla | Rollanpassad startsida med nästa åtgärd, notiser och block per roll |
 | Ärenden | Överförmyndare | Arbetskö med status, ansvarig och kösignaler (problemkort 1) |
 | Granskning av årsräkning | Handläggare, beslutsfattare | Motorförslag, checklista CP-01–CP-19, verifiering av oläsligt belopp, avvikelser, komplettering, avslutsgrind |

@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import Admin from "./pages/Admin";
 import ArendeDetalj from "./pages/ArendeDetalj";
+import ElsaStart, { KomIgang, Sektor } from "./pages/ElsaStart";
 import Arenden from "./pages/Arenden";
 import Behovsprovning from "./pages/Behovsprovning";
 import Logg from "./pages/Logg";
@@ -20,6 +21,10 @@ export default function App() {
     <Layout>
       <Routes>
         <Route path="/" element={jag.roll === "stallforetradare" ? <Navigate to="/mina-uppdrag" replace /> : <Startsida />} />
+        <Route path="/start" element={<ElsaStart />} />
+        <Route path="/start/offentlig" element={<Sektor sektor="offentlig" />} />
+        <Route path="/start/privat" element={<Sektor sektor="privat" />} />
+        <Route path="/start/kom-igang" element={<KomIgang />} />
         <Route path="/notiser" element={<Notiser />} />
         <Route path="/arenden" element={<Arenden />} />
         <Route path="/arenden/:id" element={<ArendeDetalj />} />
