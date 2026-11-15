@@ -1,4 +1,26 @@
-# ELSA Överförmyndare – granskningsstöd för årsräkning (MVP)
+# ELSA – plattform, ELSA START och moduler
+
+Repot innehåller den gemensamma ELSA-plattformen (modulregister, kundresa, behörighet, CRM-flöde) och två
+moduler med testade huvudflöden: **Val & Överförmyndare** (granskning av årsräkning) och **Energi**
+(pilotfallet i utvecklingsprompten 2026-11-15, avsnitt 15.2). Status per krav och modul finns i
+[docs/kravmatris.md](docs/kravmatris.md). Ingen modul är godkänd av verksamheten eller driftsatt.
+
+## Gemensam plattform (`src/plattform/`)
+
+| Del | Fil |
+|---|---|
+| Modulregister: 32 moduler, 7 vertikaler, status, sökning, sambandet modul → repo | `modulregister.ts` |
+| Kundresa: 19 metodsteg, beroenden, steg 11-grind, parallella steg 15–17, uppföljning | `metod.ts` |
+| Åtkomst per organisation, projekt och modul: Administratör, Redigerare, Läsare | `atkomst.ts` |
+| Plattformstjänst: prövar behörighet vid varje anrop, projekt, administration, CRM | `plattform.ts` |
+| Kommersiellt flöde och CRM-steg, orgnr-kontroll, inbjudningsutkast | `crm.ts` |
+| Connectorkatalog C01–C29 och skill-specifikationer S01–S16 (inga anslutningar) | `connectorer.ts` |
+| Bildregister (alla original saknas) | `bildregister.ts` |
+| Energi: CSV-import, datakvalitet, trend, mänsklig granskning | `../moduler/energi/energitrend.ts` |
+
+---
+
+# Modul: ELSA Överförmyndare – granskningsstöd för årsräkning (MVP)
 
 Första versionen av ELSA-modulen för överförmyndare. Den stödjer handläggarens
 granskning av årsräkning, årsberättelse och slutredovisning enligt kravbilden i
@@ -56,7 +78,7 @@ sidomeny, rollanpassad startsida) som kör motorn direkt i webbläsaren. Se
 
 ```bash
 npm install
-npm test          # 55 tester, testfall A-01–A-11, A-14 m.fl.
+npm test          # 107 tester: plattform, kundresa, Energi och testfall A-01–A-11, A-14 m.fl.
 npm run typecheck
 npm run demo      # genomkörning med syntetisk årsräkning
 ```

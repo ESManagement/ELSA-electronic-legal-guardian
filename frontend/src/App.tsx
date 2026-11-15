@@ -2,7 +2,14 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import Admin from "./pages/Admin";
 import ArendeDetalj from "./pages/ArendeDetalj";
-import ElsaStart, { KomIgang, Sektor } from "./pages/ElsaStart";
+import ElsaStart, { KomIgang, VertikalSida } from "./pages/ElsaStart";
+import Crm from "./pages/Crm";
+import Energi from "./pages/Energi";
+import Hemsida from "./pages/Hemsida";
+import Leverans from "./pages/Leverans";
+import ModulSida from "./pages/ModulSida";
+import OrganisationSida from "./pages/Organisation";
+import Projekt, { ProjektLista } from "./pages/Projekt";
 import Arenden from "./pages/Arenden";
 import Behovsprovning from "./pages/Behovsprovning";
 import Logg from "./pages/Logg";
@@ -16,15 +23,28 @@ import { useStore } from "./store";
 
 export default function App() {
   const { jag } = useStore();
-  if (!jag) return <Login />;
+  if (!jag)
+    return (
+      <Routes>
+        <Route path="/logga-in/:dorr" element={<Login />} />
+        <Route path="*" element={<Hemsida />} />
+      </Routes>
+    );
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={jag.roll === "stallforetradare" ? <Navigate to="/mina-uppdrag" replace /> : <Startsida />} />
+        <Route path="/" element={<Navigate to={jag.roll === "stallforetradare" ? "/mina-uppdrag" : "/start"} replace />} />
+        <Route path="/oversikt" element={<Startsida />} />
         <Route path="/start" element={<ElsaStart />} />
-        <Route path="/start/offentlig" element={<Sektor sektor="offentlig" />} />
-        <Route path="/start/privat" element={<Sektor sektor="privat" />} />
+        <Route path="/start/vertikal/:id" element={<VertikalSida />} />
         <Route path="/start/kom-igang" element={<KomIgang />} />
+        <Route path="/modul/:id" element={<ModulSida />} />
+        <Route path="/projekt" element={<ProjektLista />} />
+        <Route path="/projekt/:id" element={<Projekt />} />
+        <Route path="/leverans" element={<Leverans />} />
+        <Route path="/energi" element={<Energi />} />
+        <Route path="/organisation" element={<OrganisationSida />} />
+        <Route path="/esm/crm" element={<Crm />} />
         <Route path="/notiser" element={<Notiser />} />
         <Route path="/arenden" element={<Arenden />} />
         <Route path="/arenden/:id" element={<ArendeDetalj />} />

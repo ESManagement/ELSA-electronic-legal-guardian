@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ANVANDARE } from "../demo";
 import { useStore } from "../store";
 import { GRUPPORDNING, Lank, NAVIGATION, NavGrupp } from "./navigation";
@@ -18,6 +18,7 @@ function Anvandarbyte() {
   const navigera = useNavigate();
   if (!jag) return null;
   const kommuner = [...new Set(ANVANDARE.map((a) => a.kommun))];
+  // Byte av exempelanvändare startar om på ELSA START (eller e-tjänsten för ställföreträdare).
   return (
     <label className="anvandarbyte">
       <span className="falt-etikett">Byt exempelanvändare</span>
@@ -43,7 +44,7 @@ function Anvandarbyte() {
 }
 
 export function Layout({ children }: { children: ReactNode }) {
-  const { jag, har, loggaUt } = useStore();
+  const { jag, har, loggaUt, org } = useStore();
   const plats = useLocation();
   const [sok, setSok] = useState("");
   const [stangda, setStangda] = useState<NavGrupp[]>(lasStangda);
@@ -74,20 +75,22 @@ export function Layout({ children }: { children: ReactNode }) {
     }
   };
   const aktuellGrupp = grupper.find((g) => g.lankar.some((l) => (l.till === "/" ? plats.pathname === "/" : plats.pathname === l.till || plats.pathname.startsWith(`${l.till}/`))))?.grupp;
-  const doman = har("val.planera") ? "Valnämnd" : har("of.arende") ? "Överförmyndare" : har("etjanst") ? "E-tjänst för ställföreträdare" : "Förvaltning av systemet";
+  const doman = har("val.planera") ? "Valnämnd" : har("of.arende") ? "Överförmyndare" : har("etjanst") ? "E-tjänst för ställföreträdare" : org ? `${org.roll === "administrator" ? "Administratör" : org.roll === "redigerare" ? "Redigerare" : "Läsare"}` : "Förvaltning av systemet";
+  const iStart = plats.pathname === "/" || plats.pathname.startsWith("/start");
+  const omrade = plats.pathname.startsWith("/energi") ? "Energi" : plats.pathname.startsWith("/esm") ? "ESM" : /^\/(oversikt|notiser|arenden|behovsprovning|val|regelkort|logg|admin|mina-uppdrag)/.test(plats.pathname) ? "Val & Överförmyndare" : "START";
 
   return (
     <div className="ram">
       <aside className={`sidomeny${oppenMeny ? " oppen" : ""}`}>
         <div className="rad-mellan">
           <NavLink className="logga" to={jag.roll === "stallforetradare" ? "/" : "/start"} style={{ textDecoration: "none", color: "inherit" }} title="ELSA START">
-            <span className="logga-markor">ELSA</span> Val &amp; Överförmyndare
+            <span className="logga-markor">ELSA</span> {jag.roll === "stallforetradare" ? "Val & Överförmyndare" : omrade}
           </NavLink>
           <button className="lank menyknapp" onClick={() => setOppenMeny(!oppenMeny)} aria-expanded={oppenMeny}>
             {oppenMeny ? "Stäng" : "Meny"}
           </button>
         </div>
-        <div className="kommunnamn">{jag.kommun} · {doman}</div>
+        <div className="kommunnamn">{org?.organisation.namn ?? jag.kommun} · {doman}</div>
         <div className="menyinnehall">
           <input className="menysok" type="search" placeholder="Sök funktion …" value={sok} onChange={(e) => setSok(e.target.value)} aria-label="Sök i menyn" />
           <nav>
@@ -130,12 +133,17 @@ export function Layout({ children }: { children: ReactNode }) {
         ) : (
           <div className="principrad" role="note">
             <strong>ELSA föreslår och strukturerar.</strong> Du verifierar, bedömer och beslutar.
-            <span className="zoninfo">Val och överförmyndare hålls åtskilda · Regelkort: ej juridiskt verifierade</span>
+            {omrade === "Val & Överförmyndare" && <span className="zoninfo">Val och överförmyndare hålls åtskilda · Regelkort: ej juridiskt verifierade</span>}
           </div>
         )}
         <div className="varnruta" role="note">
-          Visningsversion med fiktiva data och demodatum 15 mars 2027. Du kan byta exempelanvändare i menyn. Ingenting sparas när du laddar om sidan.
+          Visningsversion med fiktiva data och demodatum 15 mars 2027. Inloggningen är simulerad. Du kan byta exempelanvändare i menyn. Ingenting sparas när du laddar om sidan.
         </div>
+        {!iStart && jag.roll !== "stallforetradare" && (
+          <Link className="es-tillbaka tillbaka-start" to="/start">
+            ← ELSA START
+          </Link>
+        )}
         {children}
         <footer className="sidfot">Demoversion med syntetiska data. Inga riktiga personuppgifter får matas in.</footer>
       </main>

@@ -18,12 +18,17 @@ export type Behorighet =
   | "regler.las"
   | "logg.las"
   | "admin"
-  | "etjanst";
+  | "etjanst"
+  | "plattform"
+  | "esm";
 
 export type Demoanvandare = {
   id: string;
   namn: string;
-  roll: Roll;
+  /** "plattform" = användare utan roll i Val & Överförmyndare, t.ex. en annan kund eller ESM. */
+  roll: Roll | "plattform";
+  /** Vilken dörr användaren kommer in genom på webbplatsen. */
+  dorr: "kund" | "esm" | "etjanst";
   roll_namn: string;
   enhet: string;
   kommun: string;
@@ -37,37 +42,37 @@ const roll = (r: Roll, doman: "overformyndare" | "val") => ({ roll: r, doman, gi
 
 export const ANVANDARE: Demoanvandare[] = [
   {
-    id: "anna", namn: "Anna Granskare", roll: "handlaggare", roll_namn: "Handläggare, överförmyndare", enhet: "Överförmyndarenheten", kommun: "Demostad",
-    behorigheter: ["oversikt", "of.arende", "of.granska", "regler.las"], vyer: ["handlaggare"],
+    id: "anna", namn: "Anna Granskare", roll: "handlaggare", dorr: "kund", roll_namn: "Handläggare, överförmyndare", enhet: "Överförmyndarenheten", kommun: "Demostad",
+    behorigheter: ["plattform", "oversikt", "of.arende", "of.granska", "regler.las"], vyer: ["handlaggare"],
     motor: { id: "anna", identifieradMedELeg: true, roller: [roll("handlaggare", "overformyndare")] },
   },
   {
-    id: "rasmus", namn: "Rasmus Registrator", roll: "registrator", roll_namn: "Registrator", enhet: "Överförmyndarenheten", kommun: "Demostad",
-    behorigheter: ["oversikt", "of.arende", "of.registrera"], vyer: ["registrator"],
+    id: "rasmus", namn: "Rasmus Registrator", roll: "registrator", dorr: "kund", roll_namn: "Registrator", enhet: "Överförmyndarenheten", kommun: "Demostad",
+    behorigheter: ["plattform", "oversikt", "of.arende", "of.registrera"], vyer: ["registrator"],
     motor: { id: "rasmus", identifieradMedELeg: true, roller: [roll("registrator", "overformyndare")] },
   },
   {
-    id: "beatrice", namn: "Beatrice Beslut", roll: "beslutsfattare", roll_namn: "Beslutsfattare med delegation", enhet: "Överförmyndarnämnden", kommun: "Demostad",
-    behorigheter: ["oversikt", "of.arende", "of.granska", "of.besluta", "regler.las"], vyer: ["beslutsfattare", "handlaggare"],
+    id: "beatrice", namn: "Beatrice Beslut", roll: "beslutsfattare", dorr: "kund", roll_namn: "Beslutsfattare med delegation", enhet: "Överförmyndarnämnden", kommun: "Demostad",
+    behorigheter: ["plattform", "oversikt", "of.arende", "of.granska", "of.besluta", "regler.las"], vyer: ["beslutsfattare", "handlaggare"],
     motor: { id: "beatrice", identifieradMedELeg: true, roller: [roll("beslutsfattare", "overformyndare")] },
   },
   {
-    id: "petra", namn: "Petra Processägare", roll: "processagare", roll_namn: "Processägare, överförmyndare", enhet: "Överförmyndarenheten", kommun: "Demostad",
-    behorigheter: ["oversikt", "of.arende", "of.styra", "regler.las", "logg.las"], vyer: ["processagare", "handlaggare"],
+    id: "petra", namn: "Petra Processägare", roll: "processagare", dorr: "kund", roll_namn: "Processägare, överförmyndare", enhet: "Överförmyndarenheten", kommun: "Demostad",
+    behorigheter: ["plattform", "oversikt", "of.arende", "of.styra", "regler.las", "logg.las"], vyer: ["processagare", "handlaggare"],
     motor: { id: "petra", identifieradMedELeg: true, roller: [roll("processagare", "overformyndare")] },
   },
   {
-    id: "valter", namn: "Valter Valsson", roll: "valadministrator", roll_namn: "Valadministratör", enhet: "Valnämndens kansli", kommun: "Demostad",
-    behorigheter: ["oversikt", "val.planera", "regler.las"], vyer: ["valadministrator"],
+    id: "valter", namn: "Valter Valsson", roll: "valadministrator", dorr: "kund", roll_namn: "Valadministratör", enhet: "Valnämndens kansli", kommun: "Demostad",
+    behorigheter: ["plattform", "oversikt", "val.planera", "regler.las"], vyer: ["valadministrator"],
     motor: { id: "valter", identifieradMedELeg: true, roller: [roll("valadministrator", "val")] },
   },
   {
-    id: "sigge", namn: "Sigge Systemsson", roll: "systemadministrator", roll_namn: "Systemadministratör", enhet: "IT-förvaltningen", kommun: "Demostad",
-    behorigheter: ["oversikt", "admin", "logg.las"], vyer: ["systemadministrator"],
+    id: "sigge", namn: "Sigge Systemsson", roll: "systemadministrator", dorr: "kund", roll_namn: "Systemadministratör", enhet: "IT-förvaltningen", kommun: "Demostad",
+    behorigheter: ["plattform", "oversikt", "admin", "logg.las"], vyer: ["systemadministrator"],
     motor: { id: "sigge", identifieradMedELeg: true, roller: [roll("systemadministrator", "overformyndare"), roll("systemadministrator", "val")] },
   },
   {
-    id: "stina", namn: "Stina Ställföreträdare", roll: "stallforetradare", roll_namn: "God man", enhet: "E-tjänsten", kommun: "Demostad",
+    id: "stina", namn: "Stina Ställföreträdare", roll: "stallforetradare", dorr: "etjanst", roll_namn: "God man", enhet: "E-tjänsten", kommun: "Demostad",
     behorigheter: ["etjanst"], vyer: ["stallforetradare"],
     motor: {
       id: "stina", identifieradMedELeg: true, roller: [roll("stallforetradare", "overformyndare")],
@@ -75,9 +80,30 @@ export const ANVANDARE: Demoanvandare[] = [
     },
   },
   {
-    id: "tove", namn: "Tove Tillfällig", roll: "stallforetradare", roll_namn: "Inloggad med e-legitimation, utan uppdrag", enhet: "E-tjänsten", kommun: "Demostad",
+    id: "tove", namn: "Tove Tillfällig", roll: "stallforetradare", dorr: "etjanst", roll_namn: "Inloggad med e-legitimation, utan uppdrag", enhet: "E-tjänsten", kommun: "Demostad",
     behorigheter: ["etjanst"], vyer: ["stallforetradare"],
     motor: { id: "tove", identifieradMedELeg: true, roller: [roll("stallforetradare", "overformyndare")] },
+  },
+  // Användare utan roll i Val & Överförmyndare: läsare i kommunen, en fiktiv fastighetskund och ESM.
+  {
+    id: "lars", namn: "Lars Läsare", roll: "plattform", dorr: "kund", roll_namn: "Läsare", enhet: "Kommunledningskontoret", kommun: "Demostad",
+    behorigheter: ["plattform"], vyer: [], motor: { id: "lars", identifieradMedELeg: false, roller: [] },
+  },
+  {
+    id: "fia", namn: "Fia Fastighet", roll: "plattform", dorr: "kund", roll_namn: "Administratör", enhet: "Förvaltning", kommun: "Demo Fastighets AB",
+    behorigheter: ["plattform"], vyer: [], motor: { id: "fia", identifieradMedELeg: false, roller: [] },
+  },
+  {
+    id: "frida", namn: "Frida Förvaltare", roll: "plattform", dorr: "kund", roll_namn: "Redigerare", enhet: "Energi och drift", kommun: "Demo Fastighets AB",
+    behorigheter: ["plattform"], vyer: [], motor: { id: "frida", identifieradMedELeg: false, roller: [] },
+  },
+  {
+    id: "erik", namn: "Erik Säljare", roll: "plattform", dorr: "esm", roll_namn: "Redigerare, försäljning", enhet: "Försäljning", kommun: "ES Management",
+    behorigheter: ["esm"], vyer: [], motor: { id: "erik", identifieradMedELeg: false, roller: [] },
+  },
+  {
+    id: "eva", namn: "Eva ESM-admin", roll: "plattform", dorr: "esm", roll_namn: "Administratör", enhet: "Kundansvar", kommun: "ES Management",
+    behorigheter: ["esm"], vyer: [], motor: { id: "eva", identifieradMedELeg: false, roller: [] },
   },
 ];
 
