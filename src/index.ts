@@ -20,3 +20,7 @@ export * from './plattform/crm.js';
 export * from './plattform/plattform.js';
 export * from './plattform/bildregister.js';
 export * from './moduler/energi/energitrend.js';
+export * from './plattform/dokumentmottagning.js';
+export * from './plattform/rapportregister.js';
+export * from './plattform/fullmakter.js';
+export * from './plattform/datapost.js';

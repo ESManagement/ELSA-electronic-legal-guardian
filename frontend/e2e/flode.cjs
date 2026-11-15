@@ -88,6 +88,41 @@ const ok = (namn, villkor, info = '') => { res.push({ namn, ok: !!villkor, info 
   await page.goto(fil + '#/organisation');
   ok('Fia (admin) ser användare och roller', (await text()).includes('Frida Förvaltare'));
 
+  // Dokumentmottagning: filval, dra-och-släpp, kvittens per fil, dubblett
+  await page.goto(fil + '#/dokument');
+  ok('Dokument: demoskanner tydligt märkt', (await text()).includes('Demoskanner (känner bara igen EICAR-teststrängen)'));
+  await page.getByLabel('Välj filer att ladda upp').setInputFiles([
+    { name: 'faktura-2026-01.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.7\nfaktura januari') },
+    { name: 'program.exe', mimeType: 'application/x-msdownload', buffer: Buffer.from('MZ') },
+  ]);
+  await page.waitForSelector('text=Kvittens per fil');
+  const kv = await page.locator('table').first().innerText();
+  ok('Dokument: kvittens per fil, fel fil avvisas utan att stoppa den andra', kv.includes('faktura-2026-01.pdf') && kv.includes('Mottagen') && kv.includes('program.exe') && kv.includes('Avvisad'), kv.replace(/\s+/g, ' ').slice(0, 200));
+  // Dra och släpp samma fakturafil igen -> dubblett, samt en ny fil
+  const dt = await page.evaluateHandle(() => {
+    const d = new DataTransfer();
+    d.items.add(new File(['%PDF-1.7\nfaktura januari'], 'faktura-2026-01 (kopia).pdf', { type: 'application/pdf' }));
+    d.items.add(new File(['manad;kwh\n2026-01;100'], 'el-2026.csv', { type: 'text/csv' }));
+    return d;
+  });
+  await page.dispatchEvent('[data-testid=mottagningsyta]', 'drop', { dataTransfer: dt });
+  await page.waitForFunction(() => document.body.innerText.includes('el-2026.csv'));
+  const kv2 = await page.locator('table').first().innerText();
+  ok('Dokument: dra-och-släpp går genom samma kontroller, omförsök blir dubblett', kv2.includes('Dubblett') && kv2.includes('el-2026.csv'), kv2.replace(/\s+/g, ' ').slice(0, 200));
+  ok('Dokument: ELSA föreslår typ, kunden bekräftar', (await text()).includes('Förslag: Faktura'));
+  await page.screenshot({ path: ut + '/dokument.png', fullPage: true });
+  // Rapportbibliotek
+  await page.goto(fil + '#/rapporter');
+  ok('Rapporter: publicerad demorapport med internt ärendenummer', (await text()).includes('RAP-000001') && (await text()).includes('ELSA-DEMOFAST-2027-0001'));
+  await page.getByRole('link', { name: 'RAP-000001' }).click();
+  ok('Rapport: gällande 1.0 och lucka visas som saknad uppgift', (await text()).includes('Gällande version') && (await text()).includes('Uppgift saknas'));
+  ok('Rapport: internt nummer är inte diarienummer', (await text()).includes('inte ett diarienummer'));
+  await page.getByRole('button', { name: 'Exportera Fastställd PDF' }).click();
+  ok('Rapport: ny export av oförändrat innehåll knyts till samma version', (await text()).includes('samma innehåll som tidigare export'));
+  await page.getByRole('button', { name: 'Begär diarieregistrering' }).click();
+  ok('Rapport: väntande diarieregistrering visas inte som genomförd', (await text()).includes('Registrering väntar'));
+  await page.screenshot({ path: ut + '/rapport.png', fullPage: true });
+
   // Byt till Lars (läsare)
   await page.getByLabel('Byt exempelanvändare').selectOption('lars');
   await page.goto(fil + '#/projekt/PRJ-DEMOSTAD-1');
@@ -114,6 +149,8 @@ const ok = (namn, villkor, info = '') => { res.push({ namn, ok: !!villkor, info 
   ok('Anna: översikt Val & Ö fungerar', (await text()).includes('Handläggare'));
   await page.goto(fil + '#/arenden/AR-SYNT-1');
   ok('Anna: granskning av årsräkning', (await text()).includes('Årsräkning'));
+
+  ok('Anna (annan kund) kan inte öppna Demo Fastighets rapport', await (async () => { await page.goto(fil + '#/rapporter/RAP-000001'); return (await text()).includes('Rapporten finns inte eller du saknar behörighet'); })());
 
   // ESM: Erik flyttar offerten, Eva godkänner
   await page.getByLabel('Byt exempelanvändare').selectOption('erik');

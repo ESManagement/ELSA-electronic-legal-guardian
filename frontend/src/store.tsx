@@ -18,10 +18,13 @@ import {
   type Motorkorning,
   type Redovisning,
   type Plattform,
+  type Dokumentmottagning,
+  type Rapportregister,
   type Session,
 } from "../../src/index.js";
 import { exempelArsrakning } from "../../src/exempeldata.js";
 import { skapaPlattform } from "./plattformsdemo";
+import { skapaRapporttjanster } from "./rapportdemo";
 import { ANVANDARE, Arendepost, DELEGATIONER, Demoanvandare, idag, klocka, REGELKORT, startarenden, UPPDRAG } from "./demo";
 
 export type Prio = "P1" | "P2" | "P3" | "P4";
@@ -39,6 +42,8 @@ type Tillstand = {
   regler: Regelregister;
   accepterade: Record<string, string>;
   plattform: Plattform;
+  dokument: Dokumentmottagning;
+  rapporter: Rapportregister;
 };
 
 function skapa(): Tillstand {
@@ -49,7 +54,9 @@ function skapa(): Tillstand {
   granskning.foreslaFranMotor(korning);
   const behov = new Behovsbevakningar(logg, klocka);
   behov.skapaArliga(UPPDRAG, 2027, "2027-03-31");
-  return { logg, arenden: startarenden(), redovisning, korning, granskning, komplettering: null, behov, regler: new Regelregister(REGELKORT), accepterade: {}, plattform: skapaPlattform() };
+  const plattform = skapaPlattform();
+  const { dokument, rapporter } = skapaRapporttjanster(plattform);
+  return { logg, arenden: startarenden(), redovisning, korning, granskning, komplettering: null, behov, regler: new Regelregister(REGELKORT), accepterade: {}, plattform, dokument, rapporter };
 }
 
 const S: Tillstand = skapa();

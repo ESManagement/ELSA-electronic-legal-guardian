@@ -55,14 +55,21 @@ function sha256(data: Uint8Array): string {
 
 export function createHash(algoritm: string) {
   if (algoritm !== "sha256") throw new Error(`Algoritmen ${algoritm} stöds inte i webbläsaren`);
-  let innehall = "";
+  const delar: Uint8Array[] = [];
   const api = {
-    update(text: string) {
-      innehall += text;
+    update(data: string | Uint8Array) {
+      delar.push(typeof data === "string" ? new TextEncoder().encode(data) : data);
       return api;
     },
     digest(_kodning: "hex") {
-      return sha256(new TextEncoder().encode(innehall));
+      const total = delar.reduce((n, d) => n + d.length, 0);
+      const alla = new Uint8Array(total);
+      let pos = 0;
+      for (const d of delar) {
+        alla.set(d, pos);
+        pos += d.length;
+      }
+      return sha256(alla);
     },
   };
   return api;
