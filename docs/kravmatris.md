@@ -1,18 +1,19 @@
 # Kravmatris – ELSA, hemsida, ELSA START och moduler
 
-Källa: utvecklingsprompten "Promnt texter moduler" (15 november 2026), avsnitt 1–16. Matrisen skiljer på
+Källor: utvecklingsprompten "Promnt texter moduler" (15 november 2026), avsnitt 1–16, och PM:et
+"Kundadministration och rapporthantering i ELSA" v0.1 (15 november 2026), avsnitt 1–8 (krav K-01–K-47, avsnitt 5 nedan). Matrisen skiljer på
 **beskriven** (krav dokumenterat), **implementerad** (kod finns), **testad** (automatiskt test körts och
 passerat) och **godkänd** (verksamheten har godkänt). Ingenting i matrisen är godkänt av verksamheten.
-Status gäller grenen `claude/project-thread-4u4qiq`.
+Avsnitt 1–4 gäller sammanslagen PR #3 (`claude/project-thread-4u4qiq`). Avsnitt 5 gäller grenen `claude/project-thread-onw3r0`.
 
 Testkörning 2026-11-15, Node 22.23, Linux, Chromium (Playwright):
 
 | Kontroll | Kommando | Resultat |
 |---|---|---|
-| Enhets- och integrationstester | `npm test` | 107 av 107 godkända |
+| Enhets- och integrationstester | `npm test` | 149 av 149 godkända (107 tidigare + 42 för PM:et) |
 | Typkontroll motor | `npm run typecheck` | Inga fel |
 | Typkontroll och bygge gränssnitt | `cd frontend && npm run typecheck && npm run build:demo` | Inga fel |
-| Användarflöden i webbläsare | `cd frontend && npm run e2e` | 39 av 39 godkända |
+| Användarflöden i webbläsare | `cd frontend && npm run e2e` | 49 av 49 godkända (39 tidigare + 10 för PM:et) |
 | Säkerhetsgranskning, beroenden, återställning, driftsättning | – | **Ej körda** (ingen driftmiljö eller beslutade krav) |
 
 ## 1. Gemensamma krav
@@ -114,3 +115,92 @@ kundresan, men inget modulspecifikt huvudflöde. Inga verksamhetsregler har hitt
 7. Bildoriginal från Daniels Copilot-bibliotek.
 8. Vilket repo som är plattformens hem (detta repo eller ESMELSA/elsa-portal-och-demo m.fl.) och innehållsinventering av modulrepona.
 9. Presentationerna "Hur ska hemsida och ELSA se ut 20261111.pptx" och "Vår kundresa med ELSA.pptx" för layout och exakt målbild.
+
+## 5. PM Kundadministration och rapporthantering (v0.1, 15 november 2026)
+
+PM:et är ett förslag för intern beredning, inte en beskrivning av produktion. Kolumnen **Före** anger vad som
+fanns i plattformsbygget (PR #3). **Status** följer samma skala som ovan; *Modellerad* betyder att regler och
+datamodell är kodade och testade men inte kopplade mot någon riktig källa. Inget skickas externt och ingen
+verklig källa, skanner, diarium eller originalarkiv är ansluten.
+
+### 5.1 Huvudkedja och kundens administration (avsnitt 1–2)
+
+| Id | Krav (avsnitt) | Före | Ändring | Test | Status |
+|---|---|---|---|---|---|
+| K-01 | Huvudkedja: konto → fil/källa → mottagning → extraktion → granskning → analys → utkast → godkännande → publicering (1) | Konto, behörighet, kundresa | Mottagning, granskning för analys, rapportutkast, godkännande, publicering och arkivering byggda. Extraktion och analys mellan dem saknas | dokumentmottagning.test.ts, rapportregister.test.ts | Delvis: extraktion ej byggd |
+| K-02 | Samlad översikt: organisation, användare, objekt, uppdrag, dokument, anslutningar, fullmakter, rapporter med ansvarig, status och historik (2) | Organisation, användare, projekt | Sidorna Dokument och Rapportbibliotek; status och historik per dokument och version | e2e | Delvis: objektregister, anslutnings- och fullmaktsvy saknas |
+| K-03 | Kundadministratören hanterar användare, roller, objektåtkomst och vem som får godkänna anslutningar och rapporter (2) | Användare, roller, moduler | – | plattform.test.ts | Delvis: objektåtkomst och särskild godkännanderätt saknas (kräver beslut om roller) |
+| K-04 | Kundens handläggare lämnar underlag, kompletterar metadata och rättar inom sitt uppdrag (2) | – | `taEmot`, `komplettera`, prövas mot uppdraget och teamet | dokumentmottagning.test.ts | Testad |
+| K-05 | ESM endast avtalad åtkomst; supportåtkomst reglerad och loggad (2) | ESM får inte kunddata automatiskt | Samma regel gäller dokument och rapporter | dokumentmottagning.test.ts, rapportregister.test.ts | Delvis: tidsbegränsad supportåtkomst finns bara i Val & Ö-modulen |
+| K-06 | Beslutsfattare läser godkända rapporter, ser osäkerheter (2) | Läsarroll | Läsare ser bara publicerade versioner; luckor visas | rapportregister.test.ts "läsare" | Testad |
+| K-07 | Visa vad som saknas, väntar på granskning och senaste uppdatering per källa; inget intryck av automatisk genomsökning (2) | – | "Saknas" och status per dokument | e2e | Delvis: senaste uppdatering per källa kräver anslutningar |
+
+### 5.2 Dokumentmottagning (avsnitt 3, införandesteg 2)
+
+| Id | Krav | Före | Ändring | Test | Status |
+|---|---|---|---|---|---|
+| K-08 | Filval och dra-och-släpp av flera filer i samma yta, samma kontroller, kvittens per fil (3) | – | `src/plattform/dokumentmottagning.ts`, sidan `/dokument` | dokumentmottagning.test.ts; e2e "kvittens per fil", "dra-och-släpp" | Testad (demo) |
+| K-09 | Välj organisation, uppdrag och objekt; organisationen styrs av behörigheten (3.1) | – | Kontext prövas mot plattformens uppdrag; fel organisation nekas | dokumentmottagning.test.ts "Kundisolering" | Testad. Objekt anges som fritt id, objektregister saknas |
+| K-10 | ELSA föreslår dokumenttyp, period och objekt; kunden bekräftar; gemensamma uppgifter för många filer (3.2) | – | Förslag från filnamn märkt som förslag; `bekraftaForslag`; `gemensamt` | dokumentmottagning.test.ts "föreslår" | Testad. Förslag från innehåll kräver extraktionsmotor |
+| K-11 | Kontroller: skadlig kod, filtyp, storlek, läsbarhet, dubbletter, versionsbyte; fel per fil (3.3) | – | Alla sex kontroller; skannern är utbytbar | dokumentmottagning.test.ts | Testad. **Blockerad** för drift: skanningstjänst ej vald, filgräns 100 MB är förslag |
+| K-12 | Originalet bevaras, dokument-ID, metadata och källa registreras (3.4) | – | Original oföränderligt, `DOK-`id, handlings-id över versioner, SHA-256 | dokumentmottagning.test.ts "Versionsbyte" | Testad (i minnet). Originalarkiv ej anslutet |
+| K-13 | Status: mottagen, kontrolleras, behöver kompletteras, granskas, godkänd för analys (3.4) | – | Statusflöde med historik; utan skanning går det inte att godkänna | dokumentmottagning.test.ts "Status" | Testad |
+| K-14 | Kvittens, öppna original, extraherade uppgifter och frågor (3.5) | – | Kvittens, öppna original (loggas), begär komplettering | dokumentmottagning.test.ts | Delvis: extraherade uppgifter saknas |
+| K-15 | Samma fil vid omförsök skapar inte dubbla underlag (3.5) | – | Dubblett per kund på innehållshash, samma dokument-ID | dokumentmottagning.test.ts "omförsök"; e2e | Testad |
+| K-16 | Filformat; DWG och IFC: lagring anges separat från extraktion (3) | – | `FILTYPER` med `stod: extraktion / endast_lagring` | dokumentmottagning.test.ts "DWG" | Testad |
+| K-17 | Kundavskilt originalarkiv i SharePoint, ELSA håller metadata; åtkomst prövas i hela kedjan (3) | – | Åtkomst prövas i varje anrop | – | **Blockerad**: originalarkiv ej beslutat/anslutet |
+| K-18 | Ändrat godkänt original: berörda analyser och rapporter identifieras (3) | – | `vidKallandring` → varning i rapportregistret; `beroende()` | rapportregister.test.ts "Ändrad källa" | Testad för rapporter. Analyser saknas |
+| K-19 | Negativt test: en kund kan inte läsa en annan kunds underlag (8.2) | Kundisolering för projekt | Läsa, öppna, lista, ändra, godkänna, ersätta och lämna in till annans uppdrag nekas med samma svar som okänt id; annan kunds identiska fil avslöjas inte | dokumentmottagning.test.ts "Kundisolering"; e2e | Testad |
+
+### 5.3 Anslutningar, fullmakter och skärmbaserad insamling (avsnitt 4–5, införandesteg 3 och 6)
+
+| Id | Krav | Före | Ändring | Test | Status |
+|---|---|---|---|---|---|
+| K-20 | Anslutningsflöde: källa, omfattning, kundens godkännande, ESM-verifiering, provhämtning före schema (4) | Connectorkatalog C01–C29 | `src/plattform/fullmakter.ts`: `Anslutning`, `provaHamtning` | fullmakter.test.ts | Modellerad. Ingen källa ansluten |
+| K-21 | Läsande anslutningar, avgränsade rättigheter, skyddade hemligheter, ingen skrivning utan beslut (4) | – | `rattighet: 'lasande'`, endast hemlighetsreferens | – | Modellerad |
+| K-22 | Fullmaktsregister med givare, undertecknare, ombud, källa, bolag, objekt, uppgiftstyper, ändamål, period, giltighet, återkallelse, signerad handling (4) | – | `Fullmakt`; signerad handling = dokument-ID i mottagningen | fullmakter.test.ts | Modellerad |
+| K-23 | Hämtning kräver både giltigt mandat och fungerande teknisk behörighet; fullmakt ≠ API-anslutning (4) | – | Båda prövas, alla skäl redovisas | fullmakter.test.ts "hålls isär" | Modellerad och testad |
+| K-24 | Paus och återkallelse stoppar nya hämtningar; hämtade data raderas inte utan kontroll; bevaka utgång (4) | – | `aterkallaFullmakt`, `pausad`, `bevakaUtgang` | fullmakter.test.ts | Modellerad. Gallringsregler ej beslutade |
+| K-25 | Leverantörens fullmaktskrav verifieras per källa (4) | – | `leverantorskravVerifierade` krävs | fullmakter.test.ts | Modellerad |
+| K-26 | Personuppgiftsbiträdesavtal och rollbedömning (4) | – | – | – | **Blockerad**: dataskyddsbeslut |
+| K-27 | Prioritet API → export/filimport → skärm (5) | – | `valjInsamlingsvag` | fullmakter.test.ts | Modellerad |
+| K-28 | Skärmflöde: ändamål, godkända vyer, tillåtet innehåll, intervall, ansvarig, mandat och villkor verifierade (5) | – | `Skarmflode`, `kanKoraSkarmflode` | fullmakter.test.ts | Modellerad. Kan inte köras: inte godkänt för införande |
+| K-29 | Läs bara överenskomna uppgifter; inga ändringar; MFA kringgås inte (5) | – | Otillåtna fält kasseras; oväntad inloggningsruta stoppar | fullmakter.test.ts | Modellerad |
+| K-30 | Stopp eller manuell kontroll vid ändrad layout, ofullständig lista, oväntad inloggning, avvikande mängd (5) | – | `utvarderaSkarmobservation` | fullmakter.test.ts | Modellerad |
+| K-31 | Observation knuten till källa, objekt, tid, körning; bortfall är inte noll; avstämning mot kontrollplan (5) | – | `Datakallposition.skarmvy`, bortfall; kontrollplan krävs | fullmakter.test.ts | Modellerad. Avstämningen själv ej byggd |
+
+### 5.4 Från underlag till analysdata (avsnitt 6, införandesteg 4)
+
+| Id | Krav | Före | Ändring | Test | Status |
+|---|---|---|---|---|---|
+| K-32 | Original, extraherad observation, granskad uppgift och resultat hålls isär (6) | OF-motorn: status per uppgift | `src/plattform/datapost.ts` | fullmakter.test.ts "Minsta datapost" | Modellerad |
+| K-33 | Klassificera, extrahera, normalisera, koppla, validera, godkänn, analysera (6.1–7) | Energi: CSV-import och kvalitet | Validering av minsta datapost, motstridiga värden, inaktualitet | fullmakter.test.ts | Delvis: extraktionsmotor och granskningskö saknas |
+| K-34 | Minsta datapost med alla fält i PM:et (6) | – | `Datapost` | fullmakter.test.ts | Modellerad |
+| K-35 | Kvalitetsstatus extraherad, behöver granskas, verifierad, avvisad, inaktuell; saknat ≠ 0 (6) | Samma regel i OF och Energi | `valideraDatapost` | fullmakter.test.ts | Testad |
+| K-36 | Facit, kritiska fält och felgränser beslutas före test (8.4) | – | – | – | **Blockerad**: beslut och representativa dokument |
+
+### 5.5 Rapportgenerator och rapportregister (avsnitt 7, införandesteg 5)
+
+| Id | Krav | Före | Ändring | Test | Status |
+|---|---|---|---|---|---|
+| K-37 | Gemensam rapporttjänst för alla moduler, katalog med syfte, målgrupp, mallägare, avsnitt, indata, kvalitet, roller, regler, format (7) | – | `src/plattform/rapportregister.ts`, `RAPPORTKATALOG` med fem typer, alla förslag | rapportregister.test.ts | Testad. Mallägare ej utsedda, pilotrapport ej vald |
+| K-38 | Manuella och externa rapporter registreras med ursprung (7) | – | `ursprung` + krav på beskrivning | – | Implementerad |
+| K-39 | Generatorn kontrollerar fullständighet; AI-text märks som utkast; luckor visas, fylls inte (7) | – | Obligatoriska avsnitt krävs före granskning; AI-block måste granskas före godkännande; `text: null` = lucka | rapportregister.test.ts | Testad. Textgenerering med AI är inte inkopplad |
+| K-40 | Rapport-ID permanent; diarienummer separat; flera rapporter per ärende; versioner skapar inga nya nummer (7) | – | `RAP-`id, ärende med internt nummer, extern diariekoppling | rapportregister.test.ts "Diarienummer"; e2e | Testad |
+| K-41 | Extern diariekoppling; bekräftat nummer återläses; väntande visas inte som genomförd (7) | – | `begarExternRegistrering`, `aterlasDiarienummer`, `arendebeteckning` | rapportregister.test.ts; e2e | Testad. **Blockerad** mot riktigt diarium: ansvar ej beslutat, ingen adapter |
+| K-42 | Intern löpserie per kund, skild från externt nummer; skydd mot samtidiga kollisioner och omförsök (7, 8.5) | – | `tilldelaArendenummer` med villkorad skrivning och idempotensnyckel; 100 samtidiga anrop ger 100 unika nummer | rapportregister.test.ts "Kollisionssäker" | Testad i minne. Format `ELSA-<KUND>-<ÅR>-<NNNN>` är förslag; databaslager ej valt |
+| K-43 | Rapport-, versions- och leveransmetadata enligt PM:et (7) | – | `Rapport`, `Rapportversion`, `Leverans` | rapportregister.test.ts | Testad. Bevarande- och gallringsregler ej beslutade |
+| K-44 | Versioner 0.x/1.0/nya; ändringsbeskrivning; rapport-, mall- och dataversion isär; oförändrad export = samma version (7) | – | `nastaVersion`, innehållshash, deterministisk export | rapportregister.test.ts "Versionsregler" | Testad |
+| K-45 | Statusflöde utkast → granskning → godkänd → publicerad → ersatt/arkiverad; underkänt tillbaka; godkännande av bestämd innehållsversion och låst underlag; ingen tyst överskrivning; återkallelse med orsak (7) | – | Hela flödet; godkännande kräver innehållshash; fyra ögon (förslag) | rapportregister.test.ts; e2e | Testad |
+| K-46 | Format Word, PDF, presentation, tabellbilaga från samma modell; ingen automatisk extern distribution (7) | – | Export per tillåtet format med gemensamt rapport-ID, version och datatidpunkt; distribution registreras bara | rapportregister.test.ts | Delvis: inga dokumentmallar byggda |
+| K-47 | Bibliotek: sök på kund, objekt, typ, period, diarienummer, ansvarig, status; gällande version tydlig; ändrad källa ger varning, ändrar inte publicerad rapport (7) | – | `sok`, `/rapporter`, varning | rapportregister.test.ts; e2e | Testad |
+
+### 5.6 Beslut som efterfrågas i PM:et (avsnitt 8) och blockerar nästa steg
+
+1. **Grundmodell** (steg 1): objektstruktur, roller (vem får godkänna anslutningar och rapporter), informationsklassning, datamodell, originalarkiv, fullmaktsomfattning, bevarande och gallring.
+2. **Första kundflöde och pilotrapporttyp.** Katalogen har fem förslag; energirapporten används bara som demo.
+3. **Diarieansvar**: är kundens diarium huvudregister, och vilket nummerformat ska ELSA:s interna löpserie ha?
+4. **Dataskydd**: personuppgiftsbiträdesavtal, parternas roller, EU/EES.
+5. **Slutgodkännande** av rapporter: ska fyra ögon gälla (nu på som förslag) och vilken roll godkänner?
+6. **Skanningstjänst och filgräns** för mottagningen.
+7. **Vilket repo som är plattformens hem** (punkt 8 i avsnitt 4) gäller även dessa tjänster.

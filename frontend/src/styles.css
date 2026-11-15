@@ -389,3 +389,10 @@ a.es-modul { text-decoration: none; }
   .hs-topp { padding: 0.8rem 1rem; }
   .hs-hero, .hs-sektion { padding-left: 1rem; padding-right: 1rem; }
 }
+
+/* Dokumentmottagning och rapportregister */
+.mottagningsyta { border: 2px dashed var(--linje); border-radius: var(--radie); padding: 1.4rem 1rem; text-align: center; background: var(--yta-2); }
+.mottagningsyta.drar { border-color: var(--accent); background: var(--accent-ljus); }
+.mottagningsyta p { margin: 0.4rem 0; }
+.rapportblock { border-bottom: 1px solid var(--linje); padding: 0.4rem 0 0.6rem; }
+.rapportblock h3, .ai-ram h3 { margin: 0.2rem 0 0.4rem; font-size: 1rem; }

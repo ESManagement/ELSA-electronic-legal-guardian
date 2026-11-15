@@ -14,7 +14,7 @@ npm install
 npm run dev          # http://localhost:5174
 npm run typecheck
 npm run build:demo   # en enda HTML-fil i dist-demo/ som fungerar utan server
-npm run e2e          # bygger demon och kör 39 användarflödestester i Chromium (kräver Playwright)
+npm run e2e          # bygger demon och kör 49 användarflödestester i Chromium (kräver Playwright)
 ```
 
 Före inloggning visas den offentliga startsidan med två dörrar ("Jag är kund", "Jag är anställd på ESM"),
@@ -26,6 +26,8 @@ sökning, Boka demo, priser (märkta som förslag) och offertförfrågan. Inlogg
 | ELSA START | Inloggade | Alla 32 moduler från modulregistret, sökning, vertikalsidor, låsmarkering |
 | Modulsida `/modul/:id` | Inloggade | Profil, status, connectorer, kandidatrepon, projekt (bara med åtkomst), "← ELSA START" |
 | Projekt och kundresa | Kundorganisationer | 19 metodsteg, underlag, ELSA-förslag, beslut, kundgodkännande, uppföljning |
+| Dokument och underlag | Kundorganisationer | Filval och dra-och-släpp, kvittens per fil, förslag att bekräfta, granskning för analys, ny version |
+| Rapportbibliotek | Kundorganisationer | Sökning, rapport-ID, ärendenummer, versioner, granskning, godkännande, publicering, export, diariekoppling |
 | Energitrend | Med modulen Energi | Import, felkö, trend, granskning |
 | Användare och roller | Kundens administratör | Bjud in, stäng av, roll, moduler, aktivitetslogg |
 | CRM och inbjudningar | ESM | Lead till Kund i drift, inbjudningsutkast, klickräknare |

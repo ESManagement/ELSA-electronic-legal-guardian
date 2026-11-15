@@ -147,6 +147,34 @@ export class Plattform {
     return ok(structuredClone(p));
   }
 
+  /**
+   * Prövar en operation på ett uppdrag (projekt) åt andra plattformstjänster, t.ex. dokumentmottagning och
+   * rapportregister. Okänt och otillåtet uppdrag ger samma svar, så att andra kunders id inte avslöjas.
+   */
+  provaUppdrag(session: Session | null, projektId: string, operation: Operation): Resultat<Projekt> {
+    const p = this.#projekt.find((x) => x.id === projektId);
+    if (!p) return fel('Uppdraget finns inte eller du saknar behörighet');
+    const las = this.#provaProjekt(session, p, 'las');
+    if (!las.tillats) return fel('Uppdraget finns inte eller du saknar behörighet');
+    if (operation !== 'las') {
+      const b = this.#provaProjekt(session, p, operation);
+      if (!b.tillats) return fel(b.skal);
+    }
+    return ok(structuredClone(p));
+  }
+
+  /** Prövar en operation på organisationsnivå åt andra plattformstjänster. */
+  provaOrganisation(session: Session | null, organisationId: string, operation: Operation): Plattformsbeslut {
+    return this.#prova(session, organisationId, operation);
+  }
+
+  /** Roll i en organisation för en aktiv medlem, annars null. */
+  rollI(session: Session | null, organisationId: string): Plattformsroll | null {
+    if (!session) return null;
+    const m = medlemskapFor(this.#medlemskap, session.anvandarId, organisationId);
+    return m?.aktiv ? m.roll : null;
+  }
+
   skapaProjekt(session: Session | null, organisationId: string, namn: string, vertikal: VertikalId, moduler: string[], teamId?: string): Resultat<Projekt> {
     if (!namn.trim()) return fel('Projektnamn krävs');
     if (!moduler.length) return fel('Minst en modul krävs');

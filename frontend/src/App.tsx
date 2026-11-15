@@ -4,6 +4,8 @@ import Admin from "./pages/Admin";
 import ArendeDetalj from "./pages/ArendeDetalj";
 import ElsaStart, { KomIgang, VertikalSida } from "./pages/ElsaStart";
 import Crm from "./pages/Crm";
+import DokumentSida from "./pages/Dokument";
+import { NyRapport, RapportDetalj, RapportLista } from "./pages/Rapporter";
 import Energi from "./pages/Energi";
 import Hemsida from "./pages/Hemsida";
 import Leverans from "./pages/Leverans";
@@ -43,6 +45,10 @@ export default function App() {
         <Route path="/projekt/:id" element={<Projekt />} />
         <Route path="/leverans" element={<Leverans />} />
         <Route path="/energi" element={<Energi />} />
+        <Route path="/dokument" element={<DokumentSida />} />
+        <Route path="/rapporter" element={<RapportLista />} />
+        <Route path="/rapporter/ny" element={<NyRapport />} />
+        <Route path="/rapporter/:id" element={<RapportDetalj />} />
         <Route path="/organisation" element={<OrganisationSida />} />
         <Route path="/esm/crm" element={<Crm />} />
         <Route path="/notiser" element={<Notiser />} />

@@ -16,6 +16,10 @@ moduler med testade huvudflöden: **Val & Överförmyndare** (granskning av års
 | Kommersiellt flöde och CRM-steg, orgnr-kontroll, inbjudningsutkast | `crm.ts` |
 | Connectorkatalog C01–C29 och skill-specifikationer S01–S16 (inga anslutningar) | `connectorer.ts` |
 | Bildregister (alla original saknas) | `bildregister.ts` |
+| Dokumentmottagning: filval och dra-och-släpp, kontroller och kvittens per fil, dubbletter, versionsbyte, kundisolering | `dokumentmottagning.ts` |
+| Rapportregister: katalog, rapport-ID, ärende- och diarienummer (kollisionssäkert), versioner 0.x/1.0, statusflöde, export, återkallelse | `rapportregister.ts` |
+| Fullmakter, anslutningar och skärmbaserad insamling – endast modell, ingen källa ansluten | `fullmakter.ts` |
+| Minsta datapost och kvalitetsstatus från underlag till analysdata | `datapost.ts` |
 | Energi: CSV-import, datakvalitet, trend, mänsklig granskning | `../moduler/energi/energitrend.ts` |
 
 ---
@@ -78,7 +82,7 @@ sidomeny, rollanpassad startsida) som kör motorn direkt i webbläsaren. Se
 
 ```bash
 npm install
-npm test          # 107 tester: plattform, kundresa, Energi och testfall A-01–A-11, A-14 m.fl.
+npm test          # 149 tester: plattform, kundresa, Energi och testfall A-01–A-11, A-14 m.fl.
 npm run typecheck
 npm run demo      # genomkörning med syntetisk årsräkning
 ```
