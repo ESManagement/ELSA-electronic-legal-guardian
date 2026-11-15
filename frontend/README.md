@@ -1,4 +1,4 @@
-# ELSA Val & Överförmyndare – gränssnitt
+# ELSA – gränssnitt
 
 Klickbar webbapplikation för modulen, uppbyggd på samma sätt som ELSA Social: val av demoanvändare per roll,
 sidomeny med grupper och sökning, principrad, rollanpassad startsida (aktiv vy, nästa åtgärd, notiser och block)
@@ -14,14 +14,28 @@ npm install
 npm run dev          # http://localhost:5174
 npm run typecheck
 npm run build:demo   # en enda HTML-fil i dist-demo/ som fungerar utan server
+npm run e2e          # bygger demon och kör 39 användarflödestester i Chromium (kräver Playwright)
 ```
+
+Före inloggning visas den offentliga startsidan med två dörrar ("Jag är kund", "Jag är anställd på ESM"),
+sökning, Boka demo, priser (märkta som förslag) och offertförfrågan. Inloggningen är simulerad och märkt så.
+
+| Vy | Vem | Vad den visar |
+|---|---|---|
+| Startsida | Alla, före inloggning | Budskap, sök modul eller uppgift, ELSA START-katalog, Boka demo, offertförfrågan, kontakt |
+| ELSA START | Inloggade | Alla 32 moduler från modulregistret, sökning, vertikalsidor, låsmarkering |
+| Modulsida `/modul/:id` | Inloggade | Profil, status, connectorer, kandidatrepon, projekt (bara med åtkomst), "← ELSA START" |
+| Projekt och kundresa | Kundorganisationer | 19 metodsteg, underlag, ELSA-förslag, beslut, kundgodkännande, uppföljning |
+| Energitrend | Med modulen Energi | Import, felkö, trend, granskning |
+| Användare och roller | Kundens administratör | Bjud in, stäng av, roll, moduler, aktivitetslogg |
+| CRM och inbjudningar | ESM | Lead till Kund i drift, inbjudningsutkast, klickräknare |
+| Leveransstatus | Inloggade | Status per modul och vertikal, bildregister |
 
 ## Vyer
 
 | Vy | Vem | Vad den visar |
 |---|---|---|
-| ELSA START | Alla utom ställföreträdare | Samlingsmodulen med alla 18 ELSA-moduler, sektorsidor och "Så kommer ni igång" (enligt presentationen *ELSA moduler 18 st*). Första sidan efter inloggning. |
-| Översikt | Alla | Rollanpassad startsida med nästa åtgärd, notiser och block per roll |
+| Översikt Val & Ö (`/oversikt`) | Val & Överförmyndare | Rollanpassad startsida med nästa åtgärd, notiser och block per roll |
 | Ärenden | Överförmyndare | Arbetskö med status, ansvarig och kösignaler (problemkort 1) |
 | Granskning av årsräkning | Handläggare, beslutsfattare | Motorförslag, checklista CP-01–CP-19, verifiering av oläsligt belopp, avvikelser, komplettering, avslutsgrind |
 | Behovsprövning | Överförmyndare | Årlig prövning av förvaltarskap, skild från årsräkningen (Ö-04, Ö-23) |

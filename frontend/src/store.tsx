@@ -17,8 +17,11 @@ import {
   type Kosignal,
   type Motorkorning,
   type Redovisning,
+  type Plattform,
+  type Session,
 } from "../../src/index.js";
 import { exempelArsrakning } from "../../src/exempeldata.js";
+import { skapaPlattform } from "./plattformsdemo";
 import { ANVANDARE, Arendepost, DELEGATIONER, Demoanvandare, idag, klocka, REGELKORT, startarenden, UPPDRAG } from "./demo";
 
 export type Prio = "P1" | "P2" | "P3" | "P4";
@@ -35,6 +38,7 @@ type Tillstand = {
   behov: Behovsbevakningar;
   regler: Regelregister;
   accepterade: Record<string, string>;
+  plattform: Plattform;
 };
 
 function skapa(): Tillstand {
@@ -45,7 +49,7 @@ function skapa(): Tillstand {
   granskning.foreslaFranMotor(korning);
   const behov = new Behovsbevakningar(logg, klocka);
   behov.skapaArliga(UPPDRAG, 2027, "2027-03-31");
-  return { logg, arenden: startarenden(), redovisning, korning, granskning, komplettering: null, behov, regler: new Regelregister(REGELKORT), accepterade: {} };
+  return { logg, arenden: startarenden(), redovisning, korning, granskning, komplettering: null, behov, regler: new Regelregister(REGELKORT), accepterade: {}, plattform: skapaPlattform() };
 }
 
 const S: Tillstand = skapa();
@@ -133,6 +137,10 @@ type Ctx = {
   vy: string;
   setVy: (v: string) => void;
   accepteraNotis: (id: string) => void;
+  /** Demosession. Demo är aldrig en verifierad inloggning. */
+  session: Session | null;
+  /** Användarens organisation i plattformen, om någon. */
+  org: ReturnType<Plattform["minaOrganisationer"]>[number] | null;
 };
 
 const Kontext = createContext<Ctx | null>(null);
@@ -154,7 +162,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (a) S.logg.registrera(aktor(a), "inloggning", a.id, { roll: a.roll });
       },
       loggaUt: () => setJag(null),
-      har: (b) => !!jag?.behorigheter.includes(b as any),
+      har: (b) => {
+        if (!jag) return false;
+        const session: Session = { anvandarId: jag.id, metod: "demo", verifierad: false };
+        const org = S.plattform.minaOrganisationer(session)[0];
+        // Modulåtkomst och administratörsroll prövas mot plattformen, inte mot en statisk lista.
+        if (b.startsWith("modul:")) return !!org && S.plattform.modulatkomst(session, org.organisation.id, b.slice(6)).tillats;
+        if (b === "org.admin") return org?.roll === "administrator";
+        return jag.behorigheter.includes(b as any);
+      },
+      session: jag ? { anvandarId: jag.id, metod: "demo", verifierad: false } : null,
+      org: jag ? S.plattform.minaOrganisationer({ anvandarId: jag.id, metod: "demo", verifierad: false })[0] ?? null : null,
       vy,
       setVy,
       accepteraNotis: (id) => {

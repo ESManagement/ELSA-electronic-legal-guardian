@@ -65,7 +65,37 @@ export interface Modul {
   uppgifter: string[];
   /** Vad som saknas för att modulen ska kunna kallas klar. */
   blockerare: string[];
+  /**
+   * Repon i ESManagement/ESMELSA vars namn motsvarar modulen (inventering 2026-11-15). Innehåll, ägare och
+   * aktuell gren är inte kontrollerade; de är kandidater för återanvändning, inte verifierade målrepon.
+   */
+  kandidatrepon: string[];
 }
+
+/** Sambandet modul → repo enligt namninventeringen 2026-11-15. Endast elsa-electronic-legal-guardian är kontrollerat. */
+export const KANDIDATREPON: Readonly<Record<string, string[]>> = Object.freeze({
+  'politik-styrning': ['ESManagement/ELSA-governance', 'ESMELSA/politiskt'],
+  'val-overformyndare': ['ESManagement/ELSA-electronic-legal-guardian'],
+  revision: ['ESManagement/ELSA-political-accountant'],
+  tillsyn: ['ESManagement/ELSA-Tillsyn', 'ESMELSA/ELSA-Tillsyn'],
+  'municipality-development': ['ESManagement/ELSA-Samhallsbyggnad', 'ESMELSA/ELSA-Samhallsbyggnad-App', 'ESMELSA/elsa-samhallsbyggnad'],
+  social: ['ESManagement/ELSA-Social', 'ESMELSA/ELSA-Social'],
+  care: ['ESMELSA/ELSA-care'],
+  'vatten-avfall': ['ESManagement/ELSA-water-waste'],
+  property: ['ESManagement/ELSA-Property', 'ESMELSA/ELSA-Property'],
+  'project-management': ['ESManagement/Project-management'],
+  power: ['ESManagement/ELSA-Power', 'ESMELSA/ELSA-Power'],
+  'bank-finance': ['ESMELSA/ELSA-Bank-Finance'],
+  economy: ['ESManagement/ELSA-Economy', 'ESMELSA/ELSA-Economy'],
+  procurement: ['ESManagement/ELSA-Procurement', 'ESMELSA/ELSA-Procurement'],
+  legal: ['ESManagement/ELSA-Legal', 'ESMELSA/ELSA-Legal'],
+  jetleasing: ['ESManagement/ELSA-Jetleasing', 'ESMELSA/ELSA-Jetleasing'],
+  learning: ['ESManagement/ELSA-Learning', 'ESMELSA/ELSA-Learning'],
+  hemklang: ['ESMELSA/hemklang'],
+});
+
+/** Repon som kan vara plattformens, hemsidans eller kundportalens hem. Ej kontrollerade. */
+export const PLATTFORMSKANDIDATER = ['ESMELSA/elsa-portal-och-demo', 'ESMELSA/esm-hemsida-react', 'ESMELSA/Kundportal-oop', 'ESMELSA/kundportalnew-oop', 'ESMELSA/mitt-esm'] as const;
 
 const SAKNAS_VERKSAMHET = 'Verksamhetskrav, målgrupp, nyckeltal och acceptanskriterier är inte fastställda';
 const SAKNAS_PILOT = 'Pilotkund och verifierad datakälla saknas';
@@ -93,7 +123,11 @@ function m(
     nyttForslag: extra.nyttForslag ?? false,
     behorighet: { kraverModultilldelning: true, klassning: extra.klassning ?? 'intern' },
     ...profil,
-    blockerare: extra.blockerare ?? [SAKNAS_VERKSAMHET, SAKNAS_PILOT],
+    blockerare: [
+      ...(extra.blockerare ?? [SAKNAS_VERKSAMHET, SAKNAS_PILOT]),
+      ...(KANDIDATREPON[id] && id !== 'val-overformyndare' ? [`Befintlig kod i ${KANDIDATREPON[id]!.join(', ')} är inte inventerad`] : []),
+    ],
+    kandidatrepon: KANDIDATREPON[id] ?? [],
   };
 }
 
@@ -116,7 +150,7 @@ export const MODULER: readonly Modul[] = Object.freeze([
     grind: 'Ingen automatiserad röstpåverkan eller automatiska myndighetsbeslut.',
     uppgifter: ['granska årsräkning', 'årsräkning', 'överförmyndare', 'god man', 'förvaltare', 'behovsprövning', 'valplanering', 'vallokal', 'komplettering'],
   }, {
-    arbetsyta: '/',
+    arbetsyta: '/oversikt',
     implementering: 'testad',
     leverans: 'delvis_klar',
     lansering: 'lanserad_demo',

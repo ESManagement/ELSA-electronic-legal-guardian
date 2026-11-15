@@ -62,6 +62,14 @@ describe('Modulregistret', () => {
     expect(sokModuler('finns-inte-xyz')).toEqual([]);
   });
 
+  it('registrerar sambandet modul → repo och kräver inventering av okontrollerade repon', () => {
+    expect(hamtaModul('val-overformyndare')?.kandidatrepon).toEqual(['ESManagement/ELSA-electronic-legal-guardian']);
+    const social = hamtaModul('social')!;
+    expect(social.kandidatrepon).toContain('ESManagement/ELSA-Social');
+    expect(social.blockerare.some((b) => b.includes('inte inventerad'))).toBe(true);
+    expect(hamtaModul('hotell')?.kandidatrepon).toEqual([]);
+  });
+
   it('har stabila id:n', () => {
     expect(hamtaModul('val-overformyndare')?.namn).toBe('Val & Överförmyndare');
     expect(hamtaModul('hr-people')?.namn).toBe('HR & People Development');
