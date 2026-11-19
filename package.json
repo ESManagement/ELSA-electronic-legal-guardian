@@ -6,9 +6,7 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "demo": "npm run build && node dist/demo.js",
-    "backend:typecheck": "tsc -p backend/tsconfig.json",
-    "backend:rutter": "tsc -p backend/tsconfig.json --noEmit false --outDir dist-backend && node dist-backend/backend/src/server.js"
+    "demo": "npm run build && node dist/demo.js"
   },
   "license": "UNLICENSED",
   "devDependencies": {
