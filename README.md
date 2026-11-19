@@ -5,6 +5,9 @@ moduler med testade huvudflöden: **Val & Överförmyndare** (granskning av års
 (pilotfallet i utvecklingsprompten 2026-11-15, avsnitt 15.2). Status per krav och modul finns i
 [docs/kravmatris.md](docs/kravmatris.md). Ingen modul är godkänd av verksamheten eller driftsatt.
 
+**Backend:** finns ännu inte. Vilka funktioner som behövs står i [docs/backend.md](docs/backend.md),
+och en placeholder ligger i [backend/](backend/README.md).
+
 ## Gemensam plattform (`src/plattform/`)
 
 | Del | Fil |
