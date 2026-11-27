@@ -67,6 +67,14 @@ const ok = (namn, villkor, info = '') => { res.push({ namn, ok: !!villkor, info 
   // Låst modul visar inga data
   await page.goto(fil + '#/modul/val-overformyndare');
   ok('Låst modul: ingen arbetsyta, låsmeddelande', (await text()).includes('Låst för dig') && (await page.getByRole('link', { name: 'Öppna arbetsytan' }).count()) === 0);
+  // Vägen till drift
+  await page.goto(fil + '#/mognad');
+  await page.waitForSelector('h1');
+  const mt = await text();
+  ok('Vägen till drift: åtta steg och förslagsmärkning', mt.includes('Pilot med mätt effekt') && mt.includes('väntar på Daniels beslut'));
+  ok('Vägen till drift: Val & Ö stoppas av publikt repo och regelkort', mt.includes('Repot är publikt i dag') && mt.includes('ej verifierade'));
+  ok('Vägen till drift: planen håller', mt.includes('Planen håller principerna'));
+  await page.screenshot({ path: ut + '/vagen-till-drift.png', fullPage: true });
   // Energi
   await page.goto(fil + '#/energi');
   await page.getByRole('button', { name: 'Läs in och kontrollera' }).click();

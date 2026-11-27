@@ -20,3 +20,6 @@ export * from './plattform/crm.js';
 export * from './plattform/plattform.js';
 export * from './plattform/bildregister.js';
 export * from './moduler/energi/energitrend.js';
+export * from './plattform/mognad.js';
+export * from './drift/effektmatning.js';
+export * from './drift/valOverformyndare.js';
