@@ -10,6 +10,7 @@ export const NAVIGATION: Lank[] = [
   { grupp: "ELSA START", till: "/start", namn: "Alla moduler", behorighet: ["plattform", "esm"], beskrivning: "Sök modul eller uppgift, ingång via vertikal", ordning: 0 },
   { grupp: "ELSA START", till: "/projekt", namn: "Projekt och kundresa", behorighet: ["plattform"], beskrivning: "Projekt kopplade till moduler och de 19 metodstegen", ordning: 5 },
   { grupp: "ELSA START", till: "/leverans", namn: "Leveransstatus", behorighet: ["plattform", "esm"], beskrivning: "Status per modul och vertikal, bildregister", ordning: 8 },
+  { grupp: "ELSA START", till: "/mognad", namn: "Vägen till drift", behorighet: ["plattform", "esm"], beskrivning: "Åtta steg, tre steg per modul och driftgrinden", ordning: 9 },
   { grupp: "ELSA START", till: "/start/kom-igang", namn: "Så kommer ni igång", behorighet: ["plattform", "esm"], beskrivning: "Demo, produktval, offert och inloggning", ordning: 10 },
   { grupp: "Min dag", till: "/oversikt", namn: "Översikt Val & Överförmyndare", behorighet: ["oversikt"], beskrivning: "Det som väntar på dig i dag", ordning: 0 },
   { grupp: "Min dag", till: "/notiser", namn: "Notiser", behorighet: ["oversikt"], beskrivning: "Signaler som behöver en ansvarig", ordning: 10 },

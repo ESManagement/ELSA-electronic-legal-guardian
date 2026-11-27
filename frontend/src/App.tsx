@@ -8,6 +8,7 @@ import Energi from "./pages/Energi";
 import Hemsida from "./pages/Hemsida";
 import Leverans from "./pages/Leverans";
 import ModulSida from "./pages/ModulSida";
+import Mognad from "./pages/Mognad";
 import OrganisationSida from "./pages/Organisation";
 import Projekt, { ProjektLista } from "./pages/Projekt";
 import Arenden from "./pages/Arenden";
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/projekt" element={<ProjektLista />} />
         <Route path="/projekt/:id" element={<Projekt />} />
         <Route path="/leverans" element={<Leverans />} />
+        <Route path="/mognad" element={<Mognad />} />
         <Route path="/energi" element={<Energi />} />
         <Route path="/organisation" element={<OrganisationSida />} />
         <Route path="/esm/crm" element={<Crm />} />
